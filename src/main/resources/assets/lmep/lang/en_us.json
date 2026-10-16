@@ -1,0 +1,27 @@
+{
+  "key.category.lmep": "Luminiflux's MTR Expansion Pack",
+  "key.lmep.toggle_preview": "Toggle Track Preview",
+  "key.lmep.toggle_hud": "Toggle Preview HUD",
+
+  "lmep.hud.title": "Track Preview",
+  "lmep.hud.ready": "Right-click a node to pick the start point",
+  "lmep.hud.disabled": "LMEP preview OFF (%s)",
+  "lmep.hud.status_valid": "Valid connection",
+  "lmep.hud.status_invalid": "Invalid: %s",
+  "lmep.hud.length": "Length: %s",
+  "lmep.hud.slope": "Slope: %s",
+  "lmep.hud.radius": "Radius: %s",
+  "lmep.hud.cumulative": "Line total: %s",
+  "lmep.hud.hint_node": "Right-click to build this rail",
+
+  "lmep.world.anchor": "Anchor",
+  "lmep.world.length": "Length %s m",
+  "lmep.world.slope": "Slope %s",
+  "lmep.world.radius": "R %s",
+  "lmep.world.cumulative": "Line %s m",
+
+  "lmep.reason.invalid_orientation": "Invalid orientation",
+  "lmep.reason.radius_too_small": "Radius too small",
+  "lmep.reason.cable_car_invalid": "Cable-car constraints not met",
+  "lmep.reason.transport_mismatch": "Different transport mode"
+}

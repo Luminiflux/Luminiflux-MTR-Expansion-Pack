@@ -1,0 +1,29 @@
+# Gradle / ForgeGradle
+.gradle/
+build/
+run/
+run-server/
+out/
+classes/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+
+# Local toolchain caches
+local.properties
+.gradle-local/
+
+# Third-party mod jars are fetched, not committed (~76 MB for MTR alone).
+# Run scripts/fetch-mtr.ps1 after cloning.
+libs/*.jar
+
+# OS
+Thumbs.db
+.DS_Store

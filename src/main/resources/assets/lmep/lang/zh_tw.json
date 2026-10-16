@@ -1,0 +1,27 @@
+{
+  "key.category.lmep": "流光MTR拓展包 (LMEP)",
+  "key.lmep.toggle_preview": "開關軌道預覽",
+  "key.lmep.toggle_hud": "開關預覽資訊面板",
+
+  "lmep.hud.title": "鋪軌預覽",
+  "lmep.hud.ready": "右鍵節點選定起點",
+  "lmep.hud.disabled": "LMEP 預覽已關閉（%s）",
+  "lmep.hud.status_valid": "連接有效",
+  "lmep.hud.status_invalid": "無效：%s",
+  "lmep.hud.length": "軌道長度：%s",
+  "lmep.hud.slope": "坡度：%s",
+  "lmep.hud.radius": "曲率半徑：%s",
+  "lmep.hud.cumulative": "線路總長：%s",
+  "lmep.hud.hint_node": "右鍵即可按預覽鋪設該軌道",
+
+  "lmep.world.anchor": "錨點",
+  "lmep.world.length": "長度 %s 米",
+  "lmep.world.slope": "坡度 %s",
+  "lmep.world.radius": "半徑 %s",
+  "lmep.world.cumulative": "線路 %s 米",
+
+  "lmep.reason.invalid_orientation": "朝向不合法",
+  "lmep.reason.radius_too_small": "曲率半徑過小",
+  "lmep.reason.cable_car_invalid": "不滿足纜車約束",
+  "lmep.reason.transport_mismatch": "兩端傳輸方式不同"
+}

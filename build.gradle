@@ -1,0 +1,106 @@
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
+
+version = mod_version
+group = 'com.luminiflux'
+base { archivesName = mod_id }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+println "Java: " + System.getProperty('java.version') + " | JVM: " + System.getProperty('java.vm.name') + " (" + System.getProperty('java.vm.version') + ")"
+println "OS: " + System.getProperty('os.name') + " (" + System.getProperty('os.arch') + ")"
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods { "${mod_id}" { source sourceSets.main } }
+        }
+        server {
+            workingDirectory project.file('run-server')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods { "${mod_id}" { source sourceSets.main } }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    flatDir { dirs 'libs' }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    // Minecraft Transit Railway 3.x, Forge build for 1.20.1.
+    //
+    // NOTE: this release jar is SRG-named (verified by disassembly: ItemRailModifier
+    // stores appendHoverText as "m_7373_"), even though its class names are already
+    // Mojang-official. It is deliberately added as a plain file dependency and NOT run
+    // through fg.deobf(), for two reasons:
+    //
+    //   * fg.deobf() cannot remap a `files(...)` dependency at all - ForgeGradle just logs
+    //     "Cannot deobfuscate dependency ... using obfuscated version" and ignores it.
+    //   * It does not need to. SRG only renames Minecraft's own members; MTR's class and
+    //     member names are never touched. Every mtr.* symbol LMEP calls therefore resolves
+    //     against the unmodified release jar - which is exactly the jar players install.
+    //
+    // Consequence: `runClient` is not usable for testing LMEP, because MTR itself is
+    // SRG-named and cannot run against ForgeGradle's Mojang-mapped dev runtime. Verify
+    // against a real Forge installation instead; see README.md.
+    implementation files("libs/mtr-forge-${mtr_version}.jar")
+
+    // Architectury API is MTR3's runtime dependency on Forge. It is needed only so that
+    // javac can resolve MTR's supertypes, and is never bundled or shipped.
+    compileOnly files("libs/architectury-${architectury_version}-forge.jar")
+}
+
+processResources {
+    // mods.toml / pack.mcmeta carry CJK text. Force UTF-8 so that `expand` does not
+    // mangle it on machines whose platform default charset is not UTF-8.
+    filteringCharset = 'UTF-8'
+
+    def replaceProperties = [
+            minecraft_version: minecraft_version,
+            forge_version    : forge_version,
+            mod_id           : mod_id,
+            mod_name         : mod_name,
+            mod_version      : mod_version,
+            mod_license      : mod_license,
+            mod_authors      : mod_authors,
+            mod_description  : mod_description,
+            mtr_version      : mtr_version
+    ]
+    inputs.properties replaceProperties
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : mod_authors,
+                'Specification-Version'   : '1',
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : mod_authors,
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+    finalizedBy 'reobfJar'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

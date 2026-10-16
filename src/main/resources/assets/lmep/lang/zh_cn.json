@@ -1,0 +1,27 @@
+{
+  "key.category.lmep": "流光MTR拓展包 (LMEP)",
+  "key.lmep.toggle_preview": "开关轨道预览",
+  "key.lmep.toggle_hud": "开关预览信息面板",
+
+  "lmep.hud.title": "铺轨预览",
+  "lmep.hud.ready": "右键节点选定起点",
+  "lmep.hud.disabled": "LMEP 预览已关闭（%s）",
+  "lmep.hud.status_valid": "连接有效",
+  "lmep.hud.status_invalid": "无效：%s",
+  "lmep.hud.length": "轨道长度：%s",
+  "lmep.hud.slope": "坡度：%s",
+  "lmep.hud.radius": "曲率半径：%s",
+  "lmep.hud.cumulative": "线路总长：%s",
+  "lmep.hud.hint_node": "右键即可按预览铺设该轨道",
+
+  "lmep.world.anchor": "锚点",
+  "lmep.world.length": "长度 %s 米",
+  "lmep.world.slope": "坡度 %s",
+  "lmep.world.radius": "半径 %s",
+  "lmep.world.cumulative": "线路 %s 米",
+
+  "lmep.reason.invalid_orientation": "朝向不合法",
+  "lmep.reason.radius_too_small": "曲率半径过小",
+  "lmep.reason.cable_car_invalid": "不满足缆车约束",
+  "lmep.reason.transport_mismatch": "两端传输方式不同"
+}
