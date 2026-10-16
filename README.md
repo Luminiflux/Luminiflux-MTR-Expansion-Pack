@@ -1,11 +1,11 @@
 # Luminiflux's MTR Expansion Pack (LMEP) · 流光MTR拓展包
 
-A client-side addon for **Minecraft Transit Railway 3.x** that brings back the
-**visual rail placement preview** from MTR4 — the live ghost track and its length,
-shown while you connect two rail nodes.
+A client-side addon for **Minecraft Transit Railway 3.x** that shows you the rail you are
+about to lay — its real length, slope and curve radius — while you are still connecting the
+two nodes.
 
-面向 **MTR3** 的纯客户端附属模组：把 MTR4 的**可视化铺轨预览**（连接节点时实时显示轨道长度）
-带回 MTR3。
+面向 **MTR3** 的纯客户端附属模组：在你连接两个节点、还没松手之前，就把这条轨道的**真实长度、
+坡度、曲率半径**算给你看。
 
 | | |
 |---|---|
@@ -18,46 +18,42 @@ shown while you connect two rail nodes.
 
 ---
 
-## v1.0 feature — Visual Rail Placement Preview
+## v1.0 feature — Live Rail Readout
 
 MTR3 gives you no feedback while you are drawing a track: you pick the first node, aim at
 the second one, right-click, and only *then* find out how long the result is — or that it
-was rejected. MTR4 fixed this with a live preview. LMEP brings that to MTR3.
+was rejected. LMEP fills that gap.
 
 While you hold a rail connector that already has an anchor node selected and your crosshair
-is on another node, LMEP shows:
+is on another node, a panel in the **bottom-left corner** shows:
 
-* **The ghost track itself** — drawn from the exact quads MTR is about to build, at MTR's
-  own rail gauge and height, tinted green when the connection is legal and red when it is
-  not, with an MTR4-style brightness pulse.
 * **The track length, live** — the true length along the curve *including the vertical
   rise*, which is the number you actually need when sizing a train. The horizontal
   projection is shown next to it for comparison.
-* **ΔXYZ, slope and curve radius**, floating at the aimed node and repeated in a HUD panel.
+* **ΔXYZ, slope and curve radius.**
 * **The accumulated length of the line the anchor belongs to**, so you can plan a whole
   line rather than one segment.
 * **Why a connection is refused**, using MTR's own rejection reasons (bad orientation,
   radius too small, cable-car constraints, mismatched transport mode).
 
-The HUD panel sits in the **bottom-left corner** and is deliberately *not* permanently on
-screen: it appears only while a rail connector is in your hand, so it never clutters
-ordinary play. Before you have picked an anchor it shows a single prompt line instead of
-the full readout.
+The panel is deliberately *not* permanently on screen: it appears only while a rail
+connector is in your hand, so it never clutters ordinary play. Before you have picked an
+anchor it shows a single prompt line instead of the full readout.
 
-Everything is computed from MTR's own classes, so the preview cannot disagree with what
-MTR actually builds.
+Everything is computed from MTR's own classes, so the numbers cannot disagree with what MTR
+actually builds.
 
 ### Keys
 
 | Key | Action |
 |---|---|
-| `K` | Toggle the preview on/off |
-| `J` | Toggle the HUD panel |
+| `K` | Toggle the readout on/off |
+| `J` | Toggle the panel |
 
 ### Configuration
 
-`config/lmep-client.toml` — master switch, world/HUD toggles, ghost-track opacity and
-width, flash animation, and the search budget for the line-length walk.
+`config/lmep-client.toml` — master switch, panel toggle, and the search budget for the
+line-length walk.
 
 ---
 
@@ -88,16 +84,12 @@ approximating them:
 Mirroring step 2 matters for correctness, not just fidelity: continuous-movement transport
 modes silently substitute `CABLE_CAR` / `CABLE_CAR_STATION`, and `RailType#railSlopeStyle`
 drives the vertical sag computed in `Rail#getPositionY`. Using the item's own rail type
-there would report a **wrong length and draw a wrong curve** for boats and cable cars.
+there would report a **wrong length** for boats and cable cars.
 
-The ghost track is produced by handing MTR's own `Rail#render` a callback, so the preview
-reuses MTR's curve maths and quad generation verbatim. The rail gauge and height offset per
-transport mode are the same constants MTR3 passes in `mtr.render.RenderTrains`.
-
-There is **no Mixin**: the preview hangs off Forge events only, so it cannot conflict with
+There is **no Mixin**: the readout hangs off Forge events only, so it cannot conflict with
 MTR's own mixins. The only reflective access is for two pieces of state MTR keeps private
 (`ItemRailModifier.railType` / `isOneWay` and `Rail.r1` / `r2`); if those ever change, LMEP
-degrades to "no preview" rather than crashing.
+degrades to "no readout" rather than crashing.
 
 ---
 
@@ -142,7 +134,7 @@ What was actually checked, and how:
 | Loads in a real game | Launched a genuine Forge 1.20.1-47.2.0 client with MTR 3.2.2-hotfix-2 + Architectury 9.2.14 + LMEP in `mods/`; it reached the main menu | ✅ |
 | The declared MTR version range is accepted | Same run — Forge enforces `mandatory=true` dependencies before loading a mod, and LMEP loaded | ✅ |
 | Client-side setup actually executes | That run produced `config/lmep-client.toml` containing every registered option; Forge only writes it after the mod registers its config spec | ✅ |
-| In-game visuals | Needs a human to place two rail nodes and watch the preview | ⚠️ not automated |
+| The readout panel | Confirmed working in game by the author | ✅ |
 
 Two caveats about that run, neither related to LMEP: the asset objects were only partially
 downloaded, so the log is full of `NoSuchFileException` for panorama and icon files; and MTR
@@ -158,15 +150,15 @@ stops the game, and both happen with or without LMEP installed.
 * The HUD panel moved from the top-right to the bottom-left corner.
 
 ### 1.0.0
-* First release: the MTR4-style visual rail placement preview for MTR3 on 1.20.1 Forge.
+* First release.
 
 ## Known limitations (v1.0)
 
-* The preview only appears when the crosshair is on a node block, because that is the only
+* The readout only appears when the crosshair is on a node block, because that is the only
   case in which MTR would accept the click. Aiming at empty space shows nothing.
 * MTR's "a platform or siding already exists here" rejection cannot be reproduced on the
-  client: it needs `RailwayData`, which only exists server-side. LMEP may therefore show a
-  valid preview for a connection the server then refuses.
+  client: it needs `RailwayData`, which only exists server-side. LMEP may therefore report a
+  valid connection that the server then refuses.
 * The anchor position is read from the connector item's NBT, the same mechanism MTR's own
   "selected block" tooltip uses. It arrives via the normal server→client inventory sync, so
   it can lag by a tick.
@@ -181,7 +173,6 @@ stops the game, and both happen with or without LMEP installed.
 
 ## Credits
 
-* **Minecraft Transit Railway** by Jonathan Ho (jonafanho) — the API surface, the rail
-  maths and the `rail_preview` texture that LMEP reuses. All rights to MTR remain with its
-  author.
+* **Minecraft Transit Railway** by Jonathan Ho (jonafanho) — the API surface and the rail
+  maths that LMEP reuses. All rights to MTR remain with its author.
 * LMEP is an independent addon. It does not modify, patch, or redistribute MTR.
